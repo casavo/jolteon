@@ -1,0 +1,11 @@
+old_table: my_old_dbt_model
+new_table:
+fields_raw_mapping:
+  old_metric_name_1: new_metric_name_1
+  old_metric_name_2: new_metric_name_2
+  old_dimension_name_1: new_dimension_name_1
+  old_dimension_name_2: new_dimension_name_2
+query_ids:
+  - 1
+  - 2
+  - 3
