@@ -47,6 +47,8 @@ class Updater:
         zipped_vals = zip(ids, new_values)
         tuple_to_str = str(tuple(zipped_vals))
         entries_to_update = tuple_to_str[1 : len(tuple_to_str) - 1].strip(",")
+        if "[" in field_type:
+            entries_to_update = entries_to_update.replace("[", "ARRAY[")
         if entries_to_update:
             with self.conn.cursor() as cur:
                 update_sql_query = f"""
@@ -171,6 +173,28 @@ class Updater:
         )
         return explore_names
 
+    def get_pivot_dimensions_to_update(self, ids: tuple[int, ...]) -> pd.DataFrame:
+        pivot_dimensions = get_df_from_query(
+            f"""
+            SELECT saved_queries_version_id, pivot_dimensions
+            FROM saved_queries_versions 
+            WHERE saved_queries_version_id {self.get_where_clause(ids)}
+            """,
+            self.conn,
+        )
+        pivot_dimensions["new_pivot_dimensions"] = pivot_dimensions["pivot_dimensions"].apply(
+            lambda l: [
+                self.config.fields_mapping.get(
+                    x.replace(self.config.old_table, self.config.target_table),
+                    x.replace(self.config.old_table, self.config.target_table),
+                )
+                for x in l
+            ]
+            if l is not None
+            else None
+        )
+        return pivot_dimensions.dropna(subset="new_pivot_dimensions")
+
     def overwrite_db(self) -> None:
         saved_queries_version_ids = self.get_saved_queries_version_ids()
         fields = self.get_fields_to_update(saved_queries_version_ids)
@@ -226,4 +250,13 @@ class Updater:
             "saved_queries_version_id",
             "explore_name",
             "VARCHAR",
+        )
+        pivot_dimensions = self.get_pivot_dimensions_to_update(saved_queries_version_ids)
+        self.write_on_postgres(
+            pivot_dimensions["saved_queries_version_id"],
+            pivot_dimensions["new_pivot_dimensions"],
+            "saved_queries_versions",
+            "saved_queries_version_id",
+            "pivot_dimensions",
+            "VARCHAR[]",
         )
