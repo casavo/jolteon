@@ -1,0 +1,52 @@
+on:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "*.*.*"
+
+name: ci
+
+concurrency:
+  group: ci
+
+env:
+  python-version: 3.10.6
+  poetry-version: 1.2.1
+
+jobs:
+  lint_and_test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python-version }}
+
+      - uses: abatilo/actions-poetry@v2.1.1
+        with:
+          poetry-version: ${{ env.poetry-version }}
+
+      - run: poetry config virtualenvs.in-project true
+
+      - name: Restore cache
+        id: poetry_and_mypy_cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .venv
+            .mypy_cache
+          key: python-${{ env.python-version }}-poetry-${{ env.poetry-version }}-lock-${{ hashFiles('poetry.lock') }}
+
+      - run: poetry install
+        if: steps.poetry_and_mypy_cache.outputs.cache-hit != 'true'
+
+      - run: poetry run black --check --diff --color .
+
+      - run: poetry run isort --check --diff --color .
+
+      - run: poetry run mypy .
+
+      - run: poetry run pytest
