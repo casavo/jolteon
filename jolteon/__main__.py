@@ -16,7 +16,13 @@ def get_ids(
     pg_user: str = "postgres",
     pg_password: str = "postgres",
 ) -> None:
-    conn = get_pg_connection(host=pg_host, port=pg_port, database=pg_database, user=pg_user, password=pg_password)
+    conn = get_pg_connection(
+        host=pg_host,
+        port=pg_port,
+        database=pg_database,
+        user=pg_user,
+        password=pg_password,
+    )
     print_query_ids(conn)
 
 
@@ -32,7 +38,13 @@ def update_db(
     with open(config_path) as f:
         config = Config(**yaml.safe_load(f))
 
-    conn = get_pg_connection(host=pg_host, port=pg_port, database=pg_database, user=pg_user, password=pg_password)
+    conn = get_pg_connection(
+        host=pg_host,
+        port=pg_port,
+        database=pg_database,
+        user=pg_user,
+        password=pg_password,
+    )
     updater = Updater(config, conn)
     updater.overwrite_db()
 

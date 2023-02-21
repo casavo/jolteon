@@ -28,7 +28,7 @@ class Updater:
         self.conn = conn
 
     @staticmethod
-    def get_where_clause(ids: tuple[int, ...]):
+    def get_where_clause(ids: tuple[int, ...]) -> str:
         if len(ids) == 0:
             return "= -42"
         if len(ids) == 1:
@@ -93,7 +93,7 @@ class Updater:
         return fields
 
     def get_calculations_to_update(self, ids: tuple[int, ...]) -> pd.DataFrame:
-        def apply_mapping(s: str):
+        def apply_mapping(s: str) -> str:
             s = s.replace(self.config.old_table, self.config.target_table)
             for k, v in self.config.calculations_mapping.items():
                 s = s.replace(k, v)
@@ -128,7 +128,7 @@ class Updater:
         return sorts
 
     def get_charts_to_update(self, ids: tuple[int, ...]) -> pd.DataFrame:
-        def apply_mapping(d: dict):
+        def apply_mapping(d: dict) -> str:
             s = json.dumps(d).replace(self.config.old_table, self.config.target_table)
             for k, v in self.config.fields_mapping.items():
                 s = s.replace(k, v)
