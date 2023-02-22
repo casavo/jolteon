@@ -4,7 +4,7 @@ import psycopg2
 
 def get_pg_connection(
     host: str,
-    port: str,
+    port: int,
     database: str,
     user: str,
     password: str,

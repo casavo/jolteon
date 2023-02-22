@@ -11,7 +11,7 @@ app = typer.Typer()
 @app.command()
 def get_ids(
     pg_host: str = "localhost",
-    pg_port: str = "5432",
+    pg_port: int = 5432,
     pg_database: str = "postgres",
     pg_user: str = "postgres",
     pg_password: str = "postgres",
@@ -30,7 +30,7 @@ def get_ids(
 def update_db(
     config_path: str,
     pg_host: str = "localhost",
-    pg_port: str = "5432",
+    pg_port: int = 5432,
     pg_database: str = "postgres",
     pg_user: str = "postgres",
     pg_password: str = "postgres",
