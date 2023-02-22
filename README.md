@@ -16,7 +16,7 @@ pip install jolteon
 
 ## How to use Jolteon
 
-1. Create a `.env` file like the `.env.example` one you find in this repository and fill it with your Lightdash database connection parameters. After that, run `source .env`.
+1. Create a `.env` file like the `.env.example` one you find in this repository and fill it with your Lightdash database connection parameters.
 
 2. Create a `config.yaml` file like the `config_example.yaml` one you find in this repository. This file should be structured as follows:
 
@@ -26,6 +26,6 @@ pip install jolteon
 
     - `fields_raw_mapping` should be filled with the mapping of the metrics and the dimensions you have changed. If you haven't changed any metric or dimension, you can also leave it empty.
 
-    - `query_ids` should be filled with the ids of the charts you want to affect when updating the database. If you don't known what are the ids of the charts (and you probably won't the first time), you can run `jolteon get-ids --connection-params-from-env`. You will be presented with a table containing the id, the name and the workspace of all the charts of your Lightdash instance.
+    - `query_ids` should be filled with the ids of the charts you want to affect when updating the database. If you don't known what are the ids of the charts (and you probably won't the first time), you can run `jolteon get-ids`. You will be presented with a table containing the id, the name and the workspace of all the charts of your Lightdash instance.
 
-3. Run `jolteon update-db config.yaml --connection-params-from-env`.
+3. Run `jolteon update-db config.yaml`.
