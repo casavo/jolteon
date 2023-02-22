@@ -1,4 +1,8 @@
+import warnings
+
 from pydantic import BaseModel, validator
+
+warnings.filterwarnings("ignore")
 
 
 class Config(BaseModel):
